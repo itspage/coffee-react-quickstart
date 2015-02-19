@@ -7,6 +7,7 @@ webpackProductionConfig = require("./webpack.production.config.js")
 map = require 'map-stream'
 touch = require 'touch'
 _ = require 'underscore'
+bower = require 'gulp-bower'
 
 # Load plugins
 $ = require('gulp-load-plugins')()
@@ -46,6 +47,9 @@ gulp.task('copy-assets', ->
       .pipe(gulp.dest('public'))
       .pipe($.size())
 )
+
+gulp.task 'bower', ->
+  bower().pipe(gulp.dest('./bower_components'))
 
 # Some quick notes on using fontcustom.
 # First you need to install some additional software
@@ -116,6 +120,6 @@ gulp.task 'default', ->
 
 gulp.task 'build', ['webpack:build', 'copy-assets']
 
-gulp.task 'watch', ['css', 'copy-assets', 'webpack-dev-server'], ->
+gulp.task 'watch', ['bower', 'css', 'copy-assets', 'webpack-dev-server'], ->
   gulp.watch(['src/styles/**'], ['css'])
   gulp.watch(['assets/**'], ['copy-assets'])

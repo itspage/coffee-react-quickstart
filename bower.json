@@ -1,0 +1,13 @@
+{
+  "name": "coffee-react-quickstart",
+  "version": "0.0.0",
+  "homepage": "https://github.com/KyleAMathews/coffee-react-quickstart",
+  "authors": [
+    "page <alex@jamgo.co>"
+  ],
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "Chart.js": "~1.0.1"
+  }
+}

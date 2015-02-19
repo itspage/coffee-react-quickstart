@@ -63,5 +63,8 @@
     "start": "./node_modules/.bin/gulp watch",
     "build": "./node_modules/.bin/gulp build",
     "test": "jest"
+  },
+  "devDependencies": {
+    "gulp-bower": "0.0.10"
   }
 }
