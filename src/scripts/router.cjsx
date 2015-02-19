@@ -12,12 +12,14 @@ Route = Router.Route
 # Require route components.
 HelloWorld = require './hello_world'
 StyleGuide = require './styleguide'
+Chart = require './chart'
 App = require './app'
 
 routes = (
   <Route handler={App}>
     <Route name="hello" handler={HelloWorld} path="/" />
     <Route name="styleguide" handler={StyleGuide} path="/styleguide" />
+    <Route name="chart" handler={Chart} path="/chart" />
   </Route>
 )
 Router.run(routes, (Handler) ->
