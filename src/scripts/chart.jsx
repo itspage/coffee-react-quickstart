@@ -4,40 +4,6 @@ var Link;
 
 Link = require('react-router').Link;
 
-require(['../../bower_components/Chart.js/Chart.js'], function(Chart){
-    // Chart.noConflict restores the Chart global variable to it's previous owner
-    // The function returns what was previously Chart, allowing you to reassign.
-    var Chartjs = Chart.noConflict();
-
-    var data = {
-        labels: ["January", "February", "March", "April", "May", "June", "July"],
-        datasets: [
-            {
-                label: "My First dataset",
-                fillColor: "rgba(220,220,220,0.2)",
-                strokeColor: "rgba(220,220,220,1)",
-                pointColor: "rgba(220,220,220,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(220,220,220,1)",
-                data: [65, 59, 80, 81, 56, 55, 40]
-            },
-            {
-                label: "My Second dataset",
-                fillColor: "rgba(151,187,205,0.2)",
-                strokeColor: "rgba(151,187,205,1)",
-                pointColor: "rgba(151,187,205,1)",
-                pointStrokeColor: "#fff",
-                pointHighlightFill: "#fff",
-                pointHighlightStroke: "rgba(151,187,205,1)",
-                data: [28, 48, 40, 19, 86, 27, 39]
-            }
-        ]
-    };
-    var ctx = document.getElementById("myChart").getContext("2d");
-    var myNewChart = new Chart(ctx).Line(data);
-});
-
 var HealthCheck = React.createClass({
     getInitialState: function() {
         return {status: "DOWN"};
@@ -67,6 +33,54 @@ var HealthCheck = React.createClass({
 });
 
 var MyChart = React.createClass({
+    getInitialState: function() {
+        return {y: [65, 59, 80, 81, 56, 55, 40], x: ["January", "February", "March", "April", "May", "June", "July"]};
+    },
+    componentDidMount: function() {
+        var url = "http://localhost:8000/api/v1/reporting/visits/?from=2014-01-01&to=2016-01-01&tag=nearby";
+        $.ajax({
+            url: url,
+            headers: {"Authorization": "Bearer tokentoken"},
+            dataType: 'json',
+            success: function(data) {
+                var x = [];
+                var y = [];
+                var i;
+                for (i in data)
+                {
+                    x.push(data[i].date);
+                    y.push(data[i].count);
+                }
+                this.setState({x: x, y: y});
+
+                // Chart.noConflict restores the Chart global variable to it's previous owner
+                // The function returns what was previously Chart, allowing you to reassign.
+                var Chart = require('../../bower_components/Chart.js/Chart.js');
+                var Chartjs = Chart.noConflict();
+
+                var data = {
+                    labels: this.state.x,
+                    datasets: [
+                        {
+                            label: "My First dataset",
+                            fillColor: "rgba(220,220,220,0.2)",
+                            strokeColor: "rgba(220,220,220,1)",
+                            pointColor: "rgba(220,220,220,1)",
+                            pointStrokeColor: "#fff",
+                            pointHighlightFill: "#fff",
+                            pointHighlightStroke: "rgba(220,220,220,1)",
+                            data: this.state.y
+                        }
+                    ]
+                };
+                var ctx = document.getElementById("myChart").getContext("2d");
+                this.state.chart = new Chart(ctx).Line(data);
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(url, status, err.toString());
+            }.bind(this)
+        });
+    },
     render: function() {
         return (
             <canvas id="myChart" width="600" height="400"></canvas>
@@ -85,5 +99,3 @@ module.exports = React.createClass({
         )
     }
 });
-
-
